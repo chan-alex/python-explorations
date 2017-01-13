@@ -83,6 +83,33 @@ r1 = RealNumber()
 
 
 
-        
+# Name mangling
+# python doesn't really have private attributes.
+# The closest thing is name mangling by prefix variable name with __
+
+class SecretString:
+
+    def __init__(self, string):
+        self.__string = string   # Name mangling.
+
+    def get_string(self):
+        return self.__string
+
+
+s = SecretString("test")
+print(s.get_string())
+
+# Attempting to access the attribute fails.
+
+# >>> s.__string
+# Traceback (most recent call last):
+#   File "<stdin>", line 1, in <module>
+# AttributeError: 'SecretString' object has no attribute '__string'
+
+
+# How this works:
+print(s._SecretString__string)
+
+
 
         
