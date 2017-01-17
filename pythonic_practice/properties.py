@@ -1,11 +1,14 @@
 
+# In python, it is possible to make class method appears as if they are class attributes
 
-
-class ImaginaryNum1:
+# this is one way: using the "property" declaration.
+# With this method it is important to name the actual data attribute and the getters/setters
+# correctly or risk infinite recurision.
+class Complex1:
 
     def __init__(self, real=0, img=0):
-        self.real = real
-        self.img = img
+        self._real = real   
+        self._img = img
 
     def __str__(self):
 
@@ -14,32 +17,54 @@ class ImaginaryNum1:
         else:
             return "{} + {}j".format(self.real, self.img)    
 
-    def __get_real(self):
-        return self.real
-
-    def __get_img(self):
-        return self.im
-
-    def __set_real(self, real):
-        self.real = real
         
+    def _get_real(self):
+        print("_get_real called")
+        return self._real
+    
 
-    def __set_img(self, img):
-        self.img
+    def _set_real(self, real):
+        print("_set_real called with {}".format(real))
+
+        # By intercepting setter, we can implment checks on the argument.
+        if not (isinstance(real, int) or isinstance(real,float)):
+            raise Exception("Argument not numeric")    
+        self._real = real        
+
+        
+    def _del_real(self):
+        pass
 
 
     
-    name = property(__get_real, __get_img)
+    def _get_img(self):
+        print("_get_img called")        
+        return self._img
 
+    
+    def _set_img(self, img):
+        print("_set_img called with {}".format(img))
 
+        # checking argument is of right type before setting it.
+        if not (isinstance(img, int) or isinstance(img,float)):
+            raise Exception("Argument not numeric")
+        self._img = img
 
+        
+    def _del_img(self):
+        pass
 
+    # to see docstring, use help(Complex1)
+    real = property(_get_real, _set_real, _del_real, "Sets the real part") 
+    img = property(_get_img, _set_img, _del_real, "Sets the imaginary")    
+
+  
 
 
 def main():
-    print("Start")
-
-    i1 = ImaginaryNum1(1,2)
+    
+    print("Testing Complex1")
+    i1 = Complex1(1,2)
 
     print(i1)
     print(i1.real)
